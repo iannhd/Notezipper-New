@@ -53,7 +53,7 @@ const loginUser = asyncHandler(async(req, res) => {
         pic:user.pic,
         token: generateToken(user._id)
         })
-        console.log('masuk sini');
+        console.log('masuk sini aja');
     }
 
     else {
