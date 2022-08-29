@@ -41,11 +41,13 @@ const registerUser = asyncHandler(async(req, res) => {
 
 const loginUser = asyncHandler(async(req, res) => {
     const {email, password} = req.body
-    console.log(email, password, "==dari login")
+    console.log(email, password, "==> dari login")
     const user = await User.findOne({email})
 
-    if(user && (await user.matchPassword(password))){
-        res.json({
+
+    if(user && (await user.matchPassword(password))) {
+        // console.log('==> user ada di db')
+        res.status(201).json({
         _id: user._id,
         name:user.name,
         email:user.email,
@@ -53,7 +55,6 @@ const loginUser = asyncHandler(async(req, res) => {
         pic:user.pic,
         token: generateToken(user._id)
         })
-        console.log('masuk sini aja');
     }
 
     else {

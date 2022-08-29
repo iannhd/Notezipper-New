@@ -4,7 +4,8 @@ const User = require('../models/userModel')
 
 const protect = asyncHandler(async(req, res, next) => {
     let token
-
+    console.log(req.headers.authorization, "===> req.headers protect")
+    console.log(req.headers.authorization.startsWith("Bearer"), "===> dari atasnya IF")
     if( req.headers.authorization &&
         req.headers.authorization.startsWith("Bearer")) {
         try{
@@ -14,7 +15,9 @@ const protect = asyncHandler(async(req, res, next) => {
 
             req.user = await User.findById(decoded.id).select("-password")
             console.log(req.user, "===> dari protect")
+            console.log(token, "===> token dari protect")
             next()
+
          } catch(error){
             res.status(401)
             throw new Error("Not authorized, token failed")

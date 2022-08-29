@@ -1,40 +1,52 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
+import React, { useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { Accordion, Button, Card, Badge } from 'react-bootstrap'
 import axios from 'axios'
 import MainScreen from '../../components/MainScreen'
+import Loading from '../../components/Loading/Loading'
+import { listNotes } from '../../actions/notesActions'
+import ErrorMessage from '../../components/ErrorMessage'
 
 const MyNotes = () => {
 
-    const [notes, setNotes] = useState([])
+    const navigate = useNavigate()
+
+    const dispatch = useDispatch()
+
+    const noteList = useSelector((state) => state.noteList);
+
+    const { loading, error, notes,  } = noteList;
+
+    const userLogin = useSelector((state)=>state.userLogin)
+
+    const {userInfo} = userLogin
 
     const deleteHandler = (id) => {
-        if(window.confirm('Are You')){
+        if(window.confirm('Are You Sure ?')){
 
         }
     }
 
-    const baseUrl = 'http://localhost:5000'
-
-    const fetchData = async () => {
-        const {data} = await axios.get(`/api/users/notes`)
-        console.log(data,"===> ini data");
-        setNotes(data)
-    }
-    console.log(notes, "==> ini notes"); 
     useEffect(()=> {
-        fetchData()
-    },[])
+        dispatch(listNotes())
+        console.log(listNotes(), "==> dari use Effect")
+        console.log(userInfo, "userInfo dari use Effect")
+        if(!userInfo){
+            navigate('/')
+        }
+    },[dispatch, userLogin])
 
   return(
-  <MainScreen title="Welcome Back Ian..">
+  <MainScreen title={`Welcome Back ${userInfo.name}`}>
     <Link to="createnote">
         <Button style={{marginLeft: 10, marginBottom: 6}} size="lg">
             Create New Note
         </Button>
     </Link>
-            {
-                notes.map((note)=>(
+            {loading && <Loading/>}
+            {error && <ErrorMessage variant='danger'>{error}</ErrorMessage>}
+            {notes?.map((note)=>(
                     <Accordion defaultActiveKey="0" key={note._id}>
                         <Card style={{margin: 10}} >
                         <Card.Header style={{display:"flex"}}>
@@ -71,7 +83,10 @@ const MyNotes = () => {
                                     posuere erat a ante.{' '}
                                 </p>
                                 <footer className="blockquote-footer">
-                                    Create on - Date
+                                    Created on{" "}
+                                    <cite title="Source Title">
+                                        {note.createdAt}
+                                    </cite>
                                 </footer>
                             </blockquote>
                         </Card.Body>

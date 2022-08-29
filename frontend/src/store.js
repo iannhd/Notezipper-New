@@ -5,9 +5,9 @@ import { noteListReducer } from './reducers/notesReducers'
 import { userLoginReducers, userRegisterReducers } from './reducers/userLoginReducers'
 
 const reducer = combineReducers({
+    noteList:noteListReducer,
     userLogin:userLoginReducers,
     userRegister:userRegisterReducers,
-    notesList:noteListReducer
 })
 
 const userInfoFromLocalStorage = localStorage.getItem('userInfo') 
